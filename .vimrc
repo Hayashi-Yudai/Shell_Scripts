@@ -1,74 +1,61 @@
-"dein Scripts------------------------
+"dein Scripts-----------------------------
 if &compatible
-	set nocompatible
+  set nocompatible               " Be iMproved
 endif
 
 " Required:
 set runtimepath+=/home/yudai/.cache/dein/repos/github.com/Shougo/dein.vim
 
-"Required:
-if dein#load_state('/home/yudai/.cache/dein')
-	call dein#begin('/home/yudai/.cache/dein')
+" Required:
+let s:dein_dir = '/home/yudai/.cache/dein'
+let g:rc_dir = expand('~/.vim/rc/')
+let s:toml = g:rc_dir . 'dein.toml'
+let s:lazy_toml = g:rc_dir . 'dein_lazy.toml'
+if dein#load_state(s:dein_dir)
+	call dein#begin(s:dein_dir)
 
-    "Let dein manege dein
-	"Required:
-	call dein#add('Shougo/dein.vim')
-    call dein#add('scrooloose/nerdtree')
-    call dein#add('simeji/winresizer')
-    call dein#add('thinca/vim-quickrun')
-    call dein#add('vim-airline/vim-airline')
-    if has('lua')
-        call dein#add('Shougo/neocomplete.vim')
-        call dein#add('Shougo/neosnippet')
-        call dein#add('Shougo/neosnippet-snippets')
-        call dein#add('davidhalter/jedi-vim')
-        call dein#add('lervag/vimtex')
-    endif
+    call dein#load_toml(s:toml, {'lazy':0})
+    call dein#load_toml(s:lazy_toml, {'lazy':1})
 
-	"Add or remove your plugins here:
-	"You can specify revision/branch/tag.
-
-	"Required:
 	call dein#end()
     call dein#save_state()
 endif
 
-
-"Required:
+" Required:
 filetype plugin indent on
 syntax enable
 
-"If you want to isntall not installed plugins on startup.
+" If you want to install not installed plugins on startup.
 if dein#check_install()
-	call dein#install()
+  call dein#install()
 endif
 
-"End dein Scripts-----------------------------------
-"
+"End dein Scripts-------------------------
 
 "setting
 set fenc=utf-8
+set fileencodings=utf-8,iso-2022-jp,euc-jp,sjis
 set nobackup
 set noswapfile
 set autoread
 set hidden
 set showcmd
 set backspace=indent,eol,start
+set vb t_vb=
 
 "Visual
 set number
 set cursorline
 set virtualedit=onemore
-set smartindent
+"set smartindent
 set visualbell
 set showmatch
 set wildmode=list:longest
-set tabstop=4
 
 "Tab
 set expandtab
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 
 "Search
 set ignorecase
@@ -80,13 +67,13 @@ nmap <Esc><Esc> :nohlsearch<CR><Esc>
 nnoremap j gj
 nnoremap k gk
 
-colorscheme janah
+syntax on
+colorscheme atom-dark-256
+set t_Co=256
 
 "キーマップ
-nnoremap <silent><C-n> :NERDTreeToggle<CR>
-nnoremap <expr><BS> neocomplete#smart_close_popup().
-imap <expr><CR> neosnippet#expandable() ? "<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "<C-y>" : "<CR>"
-imap <expr><TAB> pumvisible() ? "<C-n>" : neosnippet#jumpable() ? "<Plug>(neosnippet_expand_or_jump)" : "<TAB>"
+"nnoremap O :<C-u>call append(expand('.'),'')<Cr>j
+nnoremap <C-i> <C-a>
 
 "airlineの設定
 set laststatus=2
@@ -108,7 +95,79 @@ let g:neocomplete#min_keyword_length=3
 let g:neocomplete#enable_auto_delimeter=1
 let g:neocomplete#auto_completion_start_length=1
 
-let g:quickrun_config={'python':{'command':'python3'},
+let g:jedi#rename_command = "<C-R>"
+
+imap <C-k>  <Plug>(neosnippet_expand_or_jump)
+smap <C-k>  <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>  <Plug>(neosnippet_expand_target)
+smap <expr><Tab> neosnippet#expandable_or_jumpable() ?
+let g:neosnippet#snippets_directory='/home/yudai/.cache/dein/repos/github.com/Shougo/neosnippet-snippets/snippets,~/.vim/snippets'
+
+let g:ale_echo_msg_format = '[%linter%] %s'
+let g:ale_rust_cargo_use_check = 1
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 1
+let g:ale_sign_error = "✗"
+let g:ale_sign_warning = "⚠"
+let g:ale_linters = {
+  \ 'python': ['flake8'],
+  \ 'rust': ['cargo'],
+  \}
+let g:ale_fixers = {
+  \ 'python': ['black'],
+  \}
+let g:ale_fix_on_save = 1
+
+let g:quickrun_config={'cpp/g++' : {'cmdopt':'-std=c++11'},
+            \'python':{'command':'python'},
             \'tex':{'command':'latexmk','outputter':'error','outputter/error/error':'quickfix',
             \'cmdopt':'-pdfdvi','exec':'%c %o %s'}}
 let g:vimtex_compiler_latexmk={'callback':0}
+
+let g:acp_enableAtStartup=0
+" Use neocomplcache.
+let g:neocomplcache_enable_at_startup = 1
+" " Use smartcase.
+let g:neocomplcache_enable_smart_case = 1
+" " Set minimum syntax keyword length.
+let g:neocomplcache_min_syntax_length = 3
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+"
+" " Define dictionary.
+let g:neocomplcache_dictionary_filetype_lists = {
+     \ 'default' : ''
+     \ }
+
+set list listchars=tab:\!\ 
+"
+ " Plugin key-mappings.
+inoremap <expr><C-g>     neocomplcache#undo_completion()
+inoremap <expr><C-l>     neocomplcache#complete_common_string()
+
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+ "<C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-e>  neocomplcache#cancel_popup()
+if &term =~ "xterm"
+    let &t_ti .= "\e[?2004h"
+    let &t_te .= "\e[?2004l"
+    let &pastetoggle = "\e[201~"
+
+    function XTermPasteBegin(ret)
+        set paste
+        return a:ret
+    endfunction
+
+    noremap <special> <expr> <Esc>[200~ XTermPasteBegin("0i")
+    inoremap <special> <expr> <Esc>[200~ XTermPasteBegin("")
+    cnoremap <special> <Esc>[200~ <nop>
+    cnoremap <special> <Esc>[201~ <nop>
+endif
+
+if has('vim_starting')
+    let &t_SI .= "\e[6 q"
+    let &t_EI .= "\e[2 q"
+    let &t_SR .= "\e[4 q"
+endif
+
+map <C-n> :NERDTreeToggle<CR>
