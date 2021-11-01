@@ -53,7 +53,29 @@ fi
 
 unset color_prompt force_color_prompt
 
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
 
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -74,38 +96,42 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-export LANG=en_US
 
+export PS1='\[\033[01;34m\]\w\[\033[00m\]\$\n'
+export LS_COLORS='rs=0:di=00;34:ow=00;34:ln=01;36:mh=00:pi=40;33:so=01;35:bd=40;33:'
+LS_COLORS=$LS_COLORS:'*.go=00;36:*.py=00;36:*.rs=00;36:*.c=00;36:*.cpp=00;36:*.cc=00;36'
+LS_COLORS=$LS_COLORS:'*.exe=00;35'
+LS_COLORS=$LS_COLORS:'*.tar=00;31:*.zip=00;31:*.tgz=00;31:'
 
-PATH=$PATH:$HOME/bin
+PATH="/home/yudai/.pyenv/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+PATH=$PATH:/mnt/c/texlive/2019/bin/win32
+PATH=$PATH:/mnt/c/Windows
 PATH=$PATH:/opt/vim/src
-GOPATH=/go/src
-PATH=$PATH:$GOPATH/bin
-PATH=$PATH:/usr/local/bin
-GO111MODULE=on
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/extras/CUPTI/lib64
-
+PATH=$PATH:$HOME/.cargo/bin
 
 PYENV_ROOT=$PATH:$HOME/.pyenv
 PATH=$PATH:$PYENV_ROOT/bin:$PATH
-eval "$(pyenv init -)"
+PATH=$PATH:$HOME/bin
+GOPATH=/home/yudai/go/
+PATH=$PATH:$GOPATH/bin/
+eval "$(pyenv init --path)"
+eval "$(fasd --init auto)"
+export PIPENV_VENV_IN_PROJECT=1
+export DENO_INSTALL="/home/yudai/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
+alias platex='platex.exe --kanji=utf8'
+alias latexmk='latexmk.exe'
+alias dvipdfmx='dvipdfmx.exe'
+function tex () {
+  platex $1.tex
+  dvipdfmx $1.dvi
+}
 
-export PS1='\[\033[01;34m\]\w\[\033[00m\]\$\n'
+function winp {
+	pwd | sed -e "s;/mnt/c;C:;" -e "s;\/;\\\\\\\\;g" | xargs explorer.exe
+}
 
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/home/yudai/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-#if [ $? -eq 0 ]; then
-#    eval "$__conda_setup"
-#else
-#    if [ -f "/home/yudai/anaconda3/etc/profile.d/conda.sh" ]; then
-#        . "/home/yudai/anaconda3/etc/profile.d/conda.sh"
-#    else
-#        export PATH="/home/yudai/anaconda3/bin:$PATH"
-#    fi
-#fi
-#unset __conda_setup
-## <<< conda initialize <<<
-#. /home/yudai/anaconda3/etc/profile.d/conda.sh
+#source "$HOME/.cargo/env"
+. "$HOME/.cargo/env"
