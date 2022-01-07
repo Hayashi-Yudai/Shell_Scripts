@@ -104,8 +104,7 @@ LS_COLORS=$LS_COLORS:'*.exe=00;35'
 LS_COLORS=$LS_COLORS:'*.tar=00;31:*.zip=00;31:*.tgz=00;31:'
 
 PATH="/home/yudai/.pyenv/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
-PATH=$PATH:/mnt/c/texlive/2019/bin/win32
-PATH=$PATH:/mnt/c/Windows
+# PATH=$PATH:/mnt/c/Windows  # 多分いらない
 PATH=$PATH:/opt/vim/src
 PATH=$PATH:$HOME/.cargo/bin
 
@@ -120,14 +119,6 @@ export PIPENV_VENV_IN_PROJECT=1
 export DENO_INSTALL="/home/yudai/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
-
-alias platex='platex.exe --kanji=utf8'
-alias latexmk='latexmk.exe'
-alias dvipdfmx='dvipdfmx.exe'
-function tex () {
-  platex $1.tex
-  dvipdfmx $1.dvi
-}
 
 function winp {
 	pwd | sed -e "s;/mnt/c;C:;" -e "s;\/;\\\\\\\\;g" | xargs explorer.exe
