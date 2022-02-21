@@ -46,3 +46,6 @@ Huge version without GUI.  Features included (+) or not (-):
 
 - tmux
 - bash
+
+## starship
+`starship.toml` は `~/.config/` 以下に配置する
