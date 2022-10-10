@@ -1,104 +1,299 @@
 [[plugins]]
-repo = 'Shougo/dein.vim'
+  repo = 'Shougo/dein.vim'
+
+#########################
+# Fern.vim =>
+#########################
+[[plugins]]
+  repo = 'lambdalisue/fern.vim'
+  hook_add = '''
+  map <C-n> :Fern . -drawer -toggle<CR>
+
+  function! FernInit() abort
+    nmap <buffer><expr>
+          \ <Plug>(fern-my-open-expand-collapse)
+          \ fern#smart#leaf(
+          \   "\<Plug>(fern-action-open:select)",
+          \   "\<Plug>(fern-action-expand)",
+          \   "\<Plug>(fern-action-collapse)",
+          \ )
+    nmap <buffer> <CR> <Plug>(fern-my-open-expand-collapse)
+    nmap <buffer> <2-LeftMouse> <Plug>(fern-my-open-expand-collapse)
+    nmap <buffer> m <Plug>(fern-action-mark:toggle)j
+    nmap <buffer> N <Plug>(fern-action-new-file)
+    nmap <buffer> K <Plug>(fern-action-new-dir)
+    nmap <buffer> D <Plug>(fern-action-remove)
+    nmap <buffer> C <Plug>(fern-action-move)
+    nmap <buffer> R <Plug>(fern-action-rename)
+    nmap <buffer> s <Plug>(fern-action-open:split)
+    nmap <buffer> v <Plug>(fern-action-open:vsplit)
+    nmap <buffer> r <Plug>(fern-action-reload)
+    nmap <buffer> <nowait> d <Plug>(fern-action-hidden:toggle)
+    nmap <buffer> <nowait> < <Plug>(fern-action-leave)
+    nmap <buffer> <nowait> > <Plug>(fern-action-enter)
+  endfunction
+
+  augroup FernEvents
+    autocmd!
+    autocmd FileType fern call FernInit()
+  augroup END
+  '''
 
 [[plugins]]
-repo = 'scrooloose/nerdtree'
-hook_add = 'map <C-n> :NERDTreeToggle<CR>'
+  repo = 'lambdalisue/fern-git-status.vim'
+  hook_add = '''
+  " Disable listing ignored files/directories
+  let g:fern_git_status#disable_ignored = 1
+
+  " Disable listing untracked files
+  let g:fern_git_status#disable_untracked = 1
+
+  " Disable listing status of submodules
+  let g:fern_git_status#disable_submodules = 1
+
+  " Disable listing status of directories
+  let g:fern_git_status#disable_directories = 1
+  '''
 
 [[plugins]]
-repo = 'vim-airline/vim-airline'
-on_i = 1
-hook_add = '''
-set laststatus=2
-let g:airline#extensions#branch#enable=1
-let g:airline#extensions#tableline#enable=1
-let g:airline#extensions#wordcount#enable=0
-let g:airline#extensions#default#layout=[['a','b','c'],['x','y','z']]
-let g:airline_section_c='%t'
-let g:airline_section_x='%{&filetype}'
-"let g:airline_section_z='%31:%2v %{airline#extensions#ale#get_warning()} %{airline#extensions#ale#get_error()}'
-"let g:airline#extensions#ale#error_symbol=' '
-let g:airline#extensions#ale#warnign_symbol=' '
-let g:airline#extensions#default#section_truncate_width={}
-let g:airline#extensions#whitespace#enabled=1
+  repo = 'lambdalisue/fern-renderer-nerdfont.vim'
+  hook_add = '''
+  let g:fern#renderer = "nerdfont"
+  '''
+
+[[plugins]]
+  repo = 'lambdalisue/glyph-palette.vim'
+  hook_add ='''
+  augroup my-glyph-palette
+    autocmd! *
+    autocmd FileType fern call glyph_palette#apply()
+    autocmd FileType nerdtree,startify call glyph_palette#apply()
+  augroup END
+  '''
+
+[[plugins]]
+  repo = 'lambdalisue/nerdfont.vim'
+
+[[plugins]]
+  repo = 'yuki-yano/fern-preview.vim'
+  hook_add = '''
+  function! s:fern_settings() abort
+    nmap <silent> <buffer> p     <Plug>(fern-action-preview:toggle)
+    nmap <silent> <buffer> <C-p> <Plug>(fern-action-preview:auto:toggle)
+    nmap <silent> <buffer> <C-d> <Plug>(fern-action-preview:scroll:down:half)
+    nmap <silent> <buffer> <C-u> <Plug>(fern-action-preview:scroll:up:half)
+  endfunction
+
+  augroup fern-settings
+    autocmd!
+    autocmd FileType fern call s:fern_settings()
+  augroup END
+  '''
+[[plugins]]
+  repo = 'junegunn/fzf'
+
+[[plugins]]
+  repo = 'LumaKernel/fern-mapping-fzf.vim'
+  depends = ['fzf', 'fern.vim']
+  hook_add = '''
+  function! Fern_mapping_fzf_customize_option(spec)
+      let a:spec.options .= ' --multi'
+      " Note that fzf#vim#with_preview comes from fzf.vim
+      if exists('*fzf#vim#with_preview')
+          return fzf#vim#with_preview(a:spec)
+      else
+          return a:spec
+      endif
+  endfunction
+
+  function! Fern_mapping_fzf_before_all(dict)
+      if !len(a:dict.lines)
+          return
+      endif
+      return a:dict.fern_helper.async.update_marks([])
+  endfunction
+
+  function! s:reveal(dict)
+      execute "FernReveal -wait" a:dict.relative_path
+      execute "normal \<Plug>(fern-action-mark:set)"
+  endfunction
+
+  let g:Fern_mapping_fzf_file_sink = function('s:reveal')
+  let g:Fern_mapping_fzf_dir_sink = function('s:reveal')
 '''
 
 [[plugins]]
-repo = 'simeji/winresizer'
+  repo = 'ryanoasis/vim-devicons'
+#########################
+# <= Fern.vim
+#########################
 
 [[plugins]]
-repo = 'tpope/vim-surround'
+  repo = 'simeji/winresizer'
 
 [[plugins]]
-repo = "ryanoasis/vim-devicons"
+  repo = 'tpope/vim-surround'
+  
+#########################
+# <= vim-airline.vim
+#########################
+[[plugins]]
+  repo = 'vim-airline/vim-airline'
+  hook_add = '''
+  let g:airline#extensions#tabline#enabled = 1
+  let g:airline#extensions#tabline#show_buffers = 0
+  let g:airline#extensions#tabline#show_splits = 0
+  let g:airline_powerline_fonts = 1
+  let g:airline#extensions#default#layout = [['a', 'b', 'c'], ['x', 'y', 'z']]
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+  let g:airline#extensions#ale#error_symbol = ' '
+  let g:airline#extensions#ale#warning_symbol = ' '
+  let g:airline#extensions#branch#enabled = 1
+
+  map <C-l> :tabnext<CR>
+  map <C-k> :tabprevious<CR>
+
+  "set laststatus=2
+  "let g:airline#extensions#wordcount#enabled = 0
+  "let g:airline_section_c = '%t'
+  "let g:airline_section_x = '%{&filetype}'
+  "let g:airline#extensions#default#section_truncate_width = {}
+  "let g:airline#extensions#whitespace#enabled = 1
+  "let g:airline_left_sep = '▶'
+  "let g:airline_right_sep = '◀'
+  '''
 
 [[plugins]]
-repo = 'jiangmiao/auto-pairs'
+  repo = 'vim-airline/vim-airline-themes'
+  hook_add = '''
+  let g:airline_theme = 'bubblegum'
+  '''
 
 [[plugins]]
-repo = 'vim-denops/denops.vim'
+  repo = 'tpope/vim-fugitive'
+#########################
+# <= vim-airline.vim
+#########################
 
 [[plugins]]
-repo = 'vim-denops/denops-helloworld.vim'
+  repo = 'airblade/vim-gitgutter'
 
 [[plugins]]
-repo = 'prabirshrestha/vim-lsp'
+  repo = 'vim-denops/denops.vim'
 
 [[plugins]]
-repo = 'mattn/vim-lsp-settings'
+  repo = 'vim-denops/denops-helloworld.vim'
 
 [[plugins]]
-repo = 'Shougo/ddc.vim'
-on_event = 'InsertEnter'
-hook_add = '''
-call ddc#custom#patch_global('sources', ['around', 'ale', 'vim-lsp', 'file'])
-call ddc#custom#patch_global('sourceOptions', {
-      \ 'around': {'mark': 'A'},
-      \ 'ale': {'cleanResultsWhitespace': v:false},
-      \ 'vim-lsp': {
-      \   'mark': 'lsp',
-      \   'matchers': ['matcher_head'],
-      \   'sorters': ['sorter_rank'],
-      \},
-      \ 'file': {
-      \   'mark': 'F',
-      \   'isVolatile': v:true,
-      \   'forceCompletionPattern': '\S/\S*',
-      \},
-      \ '_': {
-      \   'matchers': ['matcher_head'],
-      \   'sorters': ['sorter_rank'],
-      \},
-      \})
-call ddc#enable()
+  repo = 'prabirshrestha/vim-lsp'
+  hook_add = '''
+  let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
+  let g:lsp_settings_filetype_ruby = ['solargraph', 'steep']
+  let g:lsp_settings_filetype_python = ['pylsp-all']
+  let g:lsp_settings_filetype_rust = ['rust-analyzer', 'rls']
+  let g:lsp_settings_filetype_toml = ['taplo-lsp']
 
-inoremap <silent><expr> <TAB>
-     \ pumvisible() ? '<C-n>' :
-     \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-     \ '<TAB>' : ddc#manual_complete()
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-'''
+	let g:lsp_settings = {
+	\   'pylsp-all': {
+	\     'workspace_config': {
+	\       'pylsp': {
+	\         'configurationSources': ['flake8']
+	\       }
+	\     }
+	\   },
+	\}
 
-[[plugins]]
-repo = 'statiolake/ddc-ale'
-on_source = 'ddc.vim'
+  function! s:on_lsp_buffer_enabled() abort
+      setlocal omnifunc=lsp#complete
+      setlocal signcolumn=yes
+      if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+      nmap <buffer> gd <plug>(lsp-definition)
+      nmap <buffer> gs <plug>(lsp-document-symbol-search)
+      nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+      nmap <buffer> gr <plug>(lsp-references)
+      nmap <buffer> gi <plug>(lsp-implementation)
+      nmap <buffer> gt <plug>(lsp-type-definition)
+      nmap <buffer> <leader>rn <plug>(lsp-rename)
+      nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+      nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+      nmap <buffer> K <plug>(lsp-hover)
+      nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+      nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
-[[plugins]]
-repo = 'Shougo/ddc-around'
-on_source = 'ddc.vim'
+      let g:lsp_format_sync_timeout = 1000
+      autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+      
+      " refer to doc to add more commands
+  endfunction
 
-[[plugins]]
- repo = 'Shougo/ddc-matcher_head'
- on_source = 'ddc.vim'
-
-[[plugins]]
- repo = 'Shougo/ddc-sorter_rank'
- on_source = 'ddc.vim'
-
-[[plugins]]
- repo = 'shun/ddc-vim-lsp'
- on_source = 'ddc.vim'
+  augroup lsp_install
+      au!
+      " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+      autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+  augroup END
+  '''
 
 [[plugins]]
- repo = 'LumaKernel/ddc-file'
- on_source = 'ddc.vim'
+  repo = 'mattn/vim-lsp-settings'
+  on_event = 'InsertEnter'
+
+######################################
+# ddc.vim =>
+######################################
+[[plugins]]
+  repo = 'Shougo/ddc.vim'
+  depends = ['denops.vim']
+  hook_source = '''
+  call ddc#custom#patch_global('sources', ['around', 'file', 'vim-lsp'])
+  call ddc#custom#patch_global('sourceOptions', {
+        \ 'around': {'mark': 'A'},
+        \ 'file': {
+        \   'mark': 'F',
+        \   'isVolatile': v:true,
+        \   'forceCompletionPattern': '\S/\S*',
+        \},
+        \ 'vim-lsp': {
+        \   'matchers': ['matcher_head'],
+        \   'mark': 'lsp',
+        \},
+        \ '_': {
+        \   'matchers': ['matcher_head'],
+        \   'sorters': ['sorter_rank'],
+        \},
+        \})
+  call ddc#enable()
+  inoremap <silent><expr> <TAB>
+       \ pumvisible() ? '<C-n>' :
+       \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+       \ '<TAB>' : ddc#manual_complete()
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+  '''
+
+#[[plugins]]
+#  repo = 'statiolake/ddc-ale'
+#  on_source = 'ddc.vim'
+
+[[plugins]]
+  repo = 'Shougo/ddc-around'
+  on_source = 'ddc.vim'
+
+[[plugins]]
+  repo = 'Shougo/ddc-matcher_head'
+  on_source = 'ddc.vim'
+
+[[plugins]]
+  repo = 'Shougo/ddc-sorter_rank'
+  on_source = 'ddc.vim'
+
+[[plugins]]
+  repo = 'LumaKernel/ddc-file'
+  on_source = 'ddc.vim'
+
+[[plugins]]
+  repo = 'shun/ddc-vim-lsp'
+  on_source = 'ddc.vim'
+######################################
+# <= ddc.vim
+######################################

@@ -1,30 +1,31 @@
-[[plugins]]
-repo = 'cespare/vim-toml'
-on_ft = 'toml'
 
 [[plugins]]
-repo = 'dense-analysis/ale'
-on_event = 'BufEnter'
-hook_add = '''
-let g:ale_completion_enabled = 1
-let g:ale_fix_on_save = 1
-let g:ale_set_quickfix = 1
-let g:ale_rust_cargo_use_check = 1 
-let g:ale_echo_msg_format = '[%linter%] %s'
-let g:ale_python_black_executable = '/home/yudai/.pyenv/shims/black'
-let g:ale_sign_warning = '⚠'
-let g:ale_sign_error = '✗'
-let g:ale_linters = {
-  \ 'python': ['flake8'],
-  \ 'go': ['go vet'],
-  \ 'rust': ['cargo'],
-  \ 'cpp': ['gcc'],
-  \ 'c': ['gcc'],
-\}
-let ale_fixers = {
-  \ 'python': ['black'],
-  \ 'rust': ['rustfmt'],
-  \ 'go': ['gofmt'],
-\}
-'''
+  repo = 'dense-analysis/ale'
+  on_event = 'InsertEnter'
+  hook_add = '''
+  let g:ale_echo_msg_format = '[%linter%] %s'
+  let g:ale_rust_cargo_use_check = 1
+  let g:ale_set_loclist = 0
+  let g:ale_set_quickfix = 1
+  let g:ale_sign_error = "✗"
+  let g:ale_c_gcc_options='-std=c11 -Wall'
+  let g:ale_sign_warning = "⚠"
+  let g:ale_fixers = {
+    \ 'python': ['black'],
+    \ 'rust': ['rustfmt'],
+    \ 'ruby': ['rubocop'],
+    \ 'go': ['gofmt'],
+    \ 'cpp': ['uncrustify'],
+    \ 'c': ['uncrustify'],
+    \}
+  let g:ale_fix_on_save = 1
+  '''
+
+[[plugins]]
+  repo = 'rhysd/vim-lsp-ale'
+  on_event = 'InsertEnter'
+
+[[plugins]]
+  repo = 'cespare/vim-toml'
+  on_ft = 'toml'
 
