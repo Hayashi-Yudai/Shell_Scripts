@@ -1,0 +1,59 @@
+set-window-option -g mode-keys vi
+set -g prefix ^a
+set -g terminal-overrides 'xterm*:smcup@:rmcup@'
+unbind %
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+bind N break-pane
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+set -sg escape-time 1
+# Set status bar
+set -g status-bg black
+set -g status-fg white
+# Set window notifications
+setw -g monitor-activity on
+set -g visual-activity on
+
+# Automatically set window title
+setw -g automatic-rename
+bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "xsel -ip && xsel -op | xsel -ib"
+bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "xsel -ip && xsel -op | xsel -ib"
+
+# status bar
+set -g status-left-length 100
+set -g status-right-length 250
+set -g status-interval 1
+setw -g monitor-activity on
+set -g visual-activity on
+set-option -g status-justify "centre"
+set-option -g status-bg "colour238"
+
+# left status bar
+set-option -g status-left ' \
+#[fg=yellow]Window: #I \
+#[fg=cyan]Pane: #P \
+'
+
+# right status bar
+set-option -g status-right ' \
+#{network_bandwidth} | \
+Online: #{online_status} | \
+CPU: #{cpu_percentage} #{cpu_temp} RAM: #{ram_percentage} GPU: #{gpu_percentage} #{gpu_temp}| \
+%Y-%m-%d (%a) %H:%M:%S'
+
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-battery'
+set -g @plugin 'tmux-plugins/tmux-cpu'
+set -g @plugin 'tmux-plugins/tmux-online-status'
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
