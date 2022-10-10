@@ -3,7 +3,6 @@ case $- in
       *) return;;
 esac
 
-# don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 
@@ -14,11 +13,8 @@ shopt -s histappend
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
 
@@ -35,60 +31,22 @@ case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+      color_prompt=yes
     else
-	color_prompt=
+      color_prompt=
     fi
 fi
 
 unset color_prompt force_color_prompt
 
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -96,33 +54,86 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+export LANG=en_US
 
-export PS1='\[\033[01;34m\]\w\[\033[00m\]\$\n'
-export LS_COLORS='rs=0:di=00;34:ow=00;34:ln=01;36:mh=00:pi=40;33:so=01;35:bd=40;33:'
-LS_COLORS=$LS_COLORS:'*.go=00;36:*.py=00;36:*.rs=00;36:*.c=00;36:*.cpp=00;36:*.cc=00;36'
-LS_COLORS=$LS_COLORS:'*.exe=00;35'
-LS_COLORS=$LS_COLORS:'*.tar=00;31:*.zip=00;31:*.tgz=00;31:'
+PATH=/bin:/sbin:/usr/bin:$HOME/bin:/usr/local/bin:/usr/local/sbin:$HOME/.local/bin:/snap/bin:/usr/games:/usr/local/games
+# PATH=$PATH:/opt/vim/src
+GOPATH=$HOME/go/src
+PATH=$PATH:$GOPATH/bin
+PATH=$PATH:/usr/local/bin
+PATH=$PATH:/usr/lib/google-cloud-sdk/bin
+PATH=$PATH:/home/yudai/Android/Sdk/platform-tools/
+PATH=$PATH:/usr/local/cuda-11.4/bin
+PATH=$PATH:/home/yudai/.deno/bin
+PATH=$PATH:$HOME/.poetry/env
+export GO111MODULE=on
+export CUDA_PATH=/usr/local/cuda
+export CFLAGS=-I$CUDA_PATH/include/
+export PATH=$PATH:/usr/local/cuda/bin/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/extras/CUPTI/lib64
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-11.4/lib64
+export CUDA_HOME=/usr/local/cuda
+export ENVIRONMENT=local
 
-PATH="/home/yudai/.pyenv/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
-# PATH=$PATH:/mnt/c/Windows  # 多分いらない
-PATH=$PATH:/opt/vim/src
-PATH=$PATH:$HOME/.cargo/bin
 
 PYENV_ROOT=$PATH:$HOME/.pyenv
 PATH=$PATH:$PYENV_ROOT/bin:$PATH
-PATH=$PATH:$HOME/bin
-GOPATH=/home/yudai/go/
-PATH=$PATH:$GOPATH/bin/
 eval "$(pyenv init --path)"
 eval "$(fasd --init auto)"
+
 export PIPENV_VENV_IN_PROJECT=1
-export DENO_INSTALL="/home/yudai/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
+
+export PS1='\[\033[01;34m\]\w\[\033[00m\]\$\n'
+export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH"
+eval "$(rbenv init -)"
+export PATH="$HOME/.luaenv/bin:$HOME/.luaenv/shims:$PATH"
+eval "$(luaenv init -)"
+
+eval "$(starship init bash)"
+. "$HOME/.cargo/env"
+
+PATH=$PATH:$(go env GOPATH)/bin
+export GOPATH=$(go env GOPATH)
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
-function winp {
-	pwd | sed -e "s;/mnt/c;C:;" -e "s;\/;\\\\\\\\;g" | xargs explorer.exe
+# fbr - checkout git branch
+fbr() {
+  local branches branch
+  branches=$(git branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
 }
 
-#source "$HOME/.cargo/env"
-. "$HOME/.cargo/env"
+# fshow - git commit browser
+fshow() {
+  git log --graph --color=always \
+    --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+    --bind "ctrl-m:execute:
+  (grep -o '[a-f0-9]\{7\}' | head -1 |
+  xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+  {}
+FZF-EOF"
+}
+
+# fd - cd to selected directory
+fd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
+
+fvir() {
+  local file
+  file=$(rg $1 | fzf | cut -d ":" -f 1)
+  vim $file
+}
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/yudai/google-cloud-sdk/path.bash.inc' ]; then . '/home/yudai/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/yudai/google-cloud-sdk/completion.bash.inc' ]; then . '/home/yudai/google-cloud-sdk/completion.bash.inc'; fi
