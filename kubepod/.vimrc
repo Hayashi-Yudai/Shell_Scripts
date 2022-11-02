@@ -1,3 +1,5 @@
+filetype plugin indent on
+
 "setting
 set fileformats=unix,dos,mac
 set fenc=utf-8
