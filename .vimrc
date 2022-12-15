@@ -34,14 +34,6 @@ call dein#recache_runtimepath()
 
 "End dein Scripts-------------------------
 
-"set runtimepath+=/home/yudai/JpFormat.vim
-"
-"" 日本語の行の連結時には空白を入力しない。(jオプションはvim 7.4以降のみ有効)
-"set formatoptions+=mMj
-"" 現在行を整形
-"nnoremap <silent> gl :JpFormat<CR>
-"vnoremap <silent> gl :JpFormat<CR>
-
 "setting
 set fileformats=unix,dos,mac
 set fenc=utf-8
@@ -82,43 +74,14 @@ nnoremap j gj
 nnoremap k gk
 
 syntax on
-" colorscheme atom-dark-256
 colorscheme lucius
 set background=dark
 set t_Co=256
 
 "キーマップ
-"nnoremap O :<C-u>call append(expand('.'),'')<Cr>j
 nnoremap <C-i> <C-a>
 
-let g:jedi#rename_command = "<C-R>"
-
-if &term =~ "xterm"
-    let &t_ti .= "\e[?2004h"
-    let &t_te .= "\e[?2004l"
-    let &pastetoggle = "\e[201~"
-
-    function XTermPasteBegin(ret)
-        set paste
-        return a:ret
-    endfunction
-
-    noremap <special> <expr> <Esc>[200~ XTermPasteBegin("0i")
-    inoremap <special> <expr> <Esc>[200~ XTermPasteBegin("")
-    cnoremap <special> <Esc>[200~ <nop>
-    cnoremap <special> <Esc>[201~ <nop>
-endif
-
-if has('vim_starting')
-    let &t_SI .= "\e[6 q"
-    let &t_EI .= "\e[2 q"
-    let &t_SR .= "\e[4 q"
-endif
-
-vnoremap < <gv
-vnoremap > >gv
-
-" highlight normal ctermbg=none
-" highlight nontext ctermbg=none
-" highlight folded ctermbg=none
-" highlight endofbuffer ctermbg=none
+let &t_ti.="\e[1 q"
+let &t_SI.="\e[5 q"
+let &t_EI.="\e[1 q"
+let &t_te.="\e[0 q"
