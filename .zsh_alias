@@ -1,0 +1,12 @@
+alias gis="git status"
+alias gid="git diff"
+alias gip="git push"
+alias ls="lsd"
+alias lt="lsd --tree"
+alias vim="nvim"
+
+alias grep="grep --color=auto"
+
+alias cat=bat
+
+alias z='fasd_cd -d'
