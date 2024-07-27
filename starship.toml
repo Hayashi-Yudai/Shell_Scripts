@@ -1,79 +1,117 @@
-# ~/.config/starship.toml
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = true
 
 format = """
-$username\
-$hostname\
-$localip\
-$shlvl\
-$singularity\
-$kubernetes\
 $directory\
-$vcsh\
 $git_branch\
 $git_commit\
-$git_state\
 $git_metrics\
 $git_status\
-$hg_branch\
-$docker_context\
-$package\
-$buf\
-$c\
-$cmake\
-$cobol\
-$container\
-$daml\
-$dart\
-$deno\
-$dotnet\
-$elixir\
-$elm\
-$erlang\
-$golang\
-$haskell\
-$helm\
-$java\
-$julia\
-$kotlin\
-$lua\
-$nim\
-$nodejs\
-$ocaml\
-$perl\
-$php\
-$pulumi\
-$purescript\
-$python\
-$rlang\
-$red\
-$ruby\
-$rust\
-$scala\
-$swift\
-$terraform\
-$vlang\
-$vagrant\
-$zig\
-$nix_shell\
-$spack\
-$memory_usage\
-$gcloud\
-$openstack\
-$azure\
-$env_var\
-$crystal\
-$custom\
-$sudo\
-$cmd_duration\
-$line_break\
-$jobs\
-$battery\
-$time\
-$status\
-$shell\
+$git_state
 $character"""
 
-command_timeout = 1000
+[directory]
+format = "[$path]($style)[$read_only]($read_only_style) "
+truncation_length = 2
+truncate_to_repo = false
+truncation_symbol = "…/"
+
+[git_branch]
+format='[$symbol$branch(:$remote_branch)]($style) '
+symbol=''
+
+[git_commit]
+commit_hash_length=7
+only_detached = false
+format="[ $hash$tag](bold #aaaaaa)"
+
+[git_metrics]
+disabled=false
+format='([ +$added]($added_style) )([-$deleted]($deleted_style))'
+
+[git_status]
+format='([$modified$staged $ahead_behind]($style) )'
+up_to_date = '[\[UPTODATE\]](green)'
+behind = '[\($count BIHIND\)](red)'
+ahead = '[\[$count AHEAD\]](red)'
+modified=' [\(Modified\)](#ee7800)'
+staged = '[ \($count file staging\)](green)'
+
+# format = """
+# $username\
+# $hostname\
+# $localip\
+# $shlvl\
+# $singularity\
+# $kubernetes\
+# $directory\
+# $vcsh\
+# $git_branch\
+# $git_commit\
+# $git_state\
+# $git_metrics\
+# $git_status\
+# $hg_branch\
+# $docker_context\
+# $package\
+# $buf\
+# $c\
+# $cmake\
+# $cobol\
+# $container\
+# $daml\
+# $dart\
+# $deno\
+# $dotnet\
+# $elixir\
+# $elm\
+# $erlang\
+# $golang\
+# $haskell\
+# $helm\
+# $java\
+# $julia\
+# $kotlin\
+# $lua\
+# $nim\
+# $nodejs\
+# $ocaml\
+# $perl\
+# $php\
+# $pulumi\
+# $purescript\
+# $python\
+# $rlang\
+# $red\
+# $ruby\
+# $rust\
+# $scala\
+# $swift\
+# $terraform\
+# $vlang\
+# $vagrant\
+# $zig\
+# $nix_shell\
+# $spack\
+# $memory_usage\
+# $gcloud\
+# $openstack\
+# $azure\
+# $env_var\
+# $crystal\
+# $custom\
+# $sudo\
+# $cmd_duration\
+# $line_break\
+# $jobs\
+# $battery\
+# $time\
+# $status\
+# $shell\
+# $character"""
+# 
+# command_timeout = 1000
+
+# ~/.config/starship.toml
+
